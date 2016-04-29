@@ -3,7 +3,7 @@ clear all, clc
 
 %----- Shrinkage Parameters -----
 data_dir = pwd;
-plot_tool_dir = 'C:\Users\Kevin\OneDrive\3DSIM';
+plot_tool_dir = '/home/kevin/3DSIM_src/plotting-tools';
 cd(data_dir);
 
 plotShrinkage = true;
@@ -62,10 +62,10 @@ saveFigure = false;
 for t = 1:1:100
     clf
     ppp = figure(10)
-    
+
     if (plotTemperature == true)
         cd(Tfield_dir)
-        SallyT=csvread(csvfiles(t).name);
+        sallyt=csvread(csvfiles(t).name);
         cd(data_dir)
         p=SallyT(:,1:2);
         %     plot(p(:,1),p(:,2),'r*')
@@ -73,61 +73,28 @@ for t = 1:1:100
         F = TriScatteredInterp(p,T2);
         qz = F(qx,qy);
         %             mesh(qx,qy,qz);
-        
+
         hold on
         contour(qx,qy,qz, [350 400 500 600 700 1000 1200 1500 1800 1923 3315]);
         caxis([350, 3315])
         caxis manual;
         %              caxis([(300)/max(max(T)) (1500)/max(max(T))]*max(max(T)));
-        
+
         colorbar
         pause
     end
-    
+
     %----- Plot Shrinkage -----
     if plotShrinkage == true
         filename = [shrinkageFileStem, '_L', num2str(t+1000), '.csv'];
         %     filename = ['Result_L', num2str(1), '_T', num2str(t), '_ShrinkageDisplacements.csv'];
-        
+
         cd(plot_tool_dir)
         [U, V, Eps1, X, Y] = readShrinkage(pwd, data_dir, filename);
         cd(data_dir)
-        
-        %     filename = ['Result_L', num2str(1+1000), '_ShrinkageDisplacements.csv'];
-        %     filename = ['Result_L', num2str(1), '_T', num2str(t), '_ShrinkageDisplacements.csv'];
-        %     N = csvread(filename, 1);
-        %
-        %     xlocs = N(:,1);
-        %     ylocs = N(:,2);
-        %     xdisp = N(:,3);
-        %     ydisp = N(:,4);
-        %
-        %     num_pts = length(xlocs);
-        %
-        %     nx = find(ylocs(2:end) ~= ylocs(1), 1, 'first');
-        %     ny = num_pts / nx;
-        %
-        %     dx = xlocs(2) - xlocs(1);
-        %     dy = ylocs(nx+1) - ylocs(1);
-        %
-        %     Lx = xlocs(end);
-        %     Ly = ylocs(end);
-        %
-        %     X = 0:dx:Lx;
-        %     Y = 0:dy:Ly;
+
         [YY,XX] = meshgrid(Y,X);
-        
-        %     U = zeros(nx,ny);
-        %     V = zeros(nx,ny);
-        %     Uprev = U;
-        %     Vprev = V;
-        %     for i= 1:nx
-        %         for j=1:ny
-        %             U(i,j) = xdisp(i + (j-1)*nx);
-        %             V(i,j) = ydisp(i + (j-1)*nx);
-        %         end
-        %     end
-        %
+
         %     figure(1)
         % contourf(XX, YY, T_norm(:,:,2)), shading flat, colorbar,colormap('cool'), hold on
         % caxis([0 0.12]);
@@ -139,15 +106,15 @@ for t = 1:1:100
         hold on
         xlabel('x/H'), ylabel('y/H')
         title(['time =', num2str(t)])
-        
+
         %     title(['Thermal contour, t = ', num2str(t)])
         %     xlabel('Top Surface Domain  in the x direction');
         %     ylabel('Top Surface Domain in the y direction')
         pause
     end
-   
-    
-    
+
+
+
     figname = 'Tcontours_fig_';
     if saveFigure == true
         set(ppp, 'PaperPositionMode', 'manual');
