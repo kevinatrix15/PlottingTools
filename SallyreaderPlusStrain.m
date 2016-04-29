@@ -1,7 +1,7 @@
 clear all, clc
 
 plot_tool_dir = '/home/kevin/3DSIM_src/plotting-tools';
-saveFigure = false;
+saveFigure = true;
 
 %----- Temperature Params ----
 plotTemperature = false;
@@ -51,12 +51,12 @@ min_x=0;
 max_y= Y(end);
 min_y=0;
 
-bedwidth_x=1.2*(max_x-min_x);
-bedwidth_y=1.2*(max_y-min_y);
+bedwidth_x=1*(max_x-min_x);
+bedwidth_y=1*(max_y-min_y);
 bedmin_x=min_x;
-bedmax_x=max_x+0.2*bedwidth_x;
+bedmax_x=max_x%+0.2*bedwidth_x;
 bedmin_y=min_y;
-bedmax_y=max_y+0.2*bedwidth_y;
+bedmax_y=max_y%+0.2*bedwidth_y;
 
 
 %----- Set up grid to interpolate to -----
@@ -103,7 +103,7 @@ for t = 1:1:numFiles
         %             mesh(qx,qy,qz);
 
         hold on
-        subplot(1,2,1)
+        %subplot(1,2,1)
         contour(qx,qy,qz, [350 400 500 600 700 1000 1200 1500 1800 1923 3315]);
         caxis([350, 3315]);
         caxis manual;
@@ -124,8 +124,10 @@ for t = 1:1:numFiles
 
         F = TriScatteredInterp(xlocs_full, ylocs_full, Eps);
         qz = F(qx,qy);
-        subplot(1,2,2)
+        %subplot(1,2,2)
         ppp = contourf(qx,qy,qz);
+
+        axis([0 0.011 0 0.003])
 
         hold on
         xlabel('x'), ylabel('y')
@@ -140,13 +142,14 @@ for t = 1:1:numFiles
 
 
 
-    figname = 'strain_temp__';
+    figname = 'strain_';
+    % figname = 'strain_temp_';
     if saveFigure == true
         set(ppp, 'PaperPositionMode', 'manual');
         set(ppp, 'PaperUnits', 'inches');
-        set(ppp, 'PaperPosition', [0 0 10 9]);
+        set(ppp, 'PaperPosition', [0 0 10 5]);
         %        fullfigname = sprintf('%s%d%s',figname, n-1+1000, '.eps');
-        fullfigname = sprintf('%s%d%s',figname, t-1+1000, '.jpg');
+        fullfigname = sprintf('%s%d%s',figname, t-1+10000, '.jpg');
         %        print(p, '-depsc', fullfigname);
         print(ppp, '-djpeg', fullfigname);
     end
