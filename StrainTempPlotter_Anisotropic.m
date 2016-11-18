@@ -4,63 +4,49 @@ plot_tool_dir = '/home/kevin/3DSIM_src/plotting-tools';
 saveFigure = false;
 
 %----- Temperature Params ----
-plotTemperature = true;
-temperatureFileStem = 'frame';
-%temperatureFileStem = 'Temperature';
-tempFileRoot = '';
-% Tfield_dir = '../Output_102715_Animation';
-% Tfield_dir= '/home/kevin/3DSIM_src/thermal-solver/SolverData/3dsim-part-output';
-% Tfield_dir= '/home/kevin/3DSIM_src/thermal-solver/SolverData/output-1x1x1-fine';
-% Tfield_dir= '/home/kevin/3DSIM_src/thermal-solver/SolverData/Output';
-% Tfield_dir= '/home/kevin/3DSIM_src/thermal-solver/SolverData/output';
+plotTemperature = false;
+temperatureFileStem = 'Temperature';
+ Tfield_dir = '/home/kevin/Downloads/2x2x2-tuningReheating/25-25/output';
 % Tfield_dir = '/home/kevin/3DSIM_src/thermal-solver/test/output';
-% Tfield_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/gus-0p125x-100um-freq30-layer275';
-% Tfield_dir = pwd;
-% Tfield_dir = '/home/kevin/Downloads/5x5x5-newTS/10-10/output';
- Tfield_dir = '/home/kevin/Downloads/domframe';
-% Tfield_dir = '/home/kevin/sim-output/formnext-vis/lshape/output';
-% Tfield_dir = '/home/kevin/Downloads/2x2x2-tuningReheating/25-25/output';
-% Tfield_dir = '/home/kevin/Downloads/2x2x2-oldTS/10-10/output';
 
 %----- Strain Parameters -----
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/gus-0p125x-100um-freq30-layer275/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/gus-0p125x-100um-freq30/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/xshape-output/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/output-1x1x1-fine/shrinkage';
 % strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/output/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/Output/shrinkage';
 % strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/reference-linux-periodic/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/output-periodic/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/SolverData/3dsim-part-output/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/materialise-prep/thermalsimulation-319/output/shrinkage';
-% strain_dir = '/home/kevin/3DSIM_src/materialise-prep/thermalsimulation-269/output/shrinkage';
-% strain_dir = '/home/kevin/Downloads/shrinkage_v293'; % Failed
-% strain_dir = '/home/kevin/Downloads/shrinkage_253_oshape';
-% strain_dir = '/home/kevin/Downloads/shrinkage_260';
-% strain_dir = '/home/kevin/Downloads/shrinkage_298_longcool';
-% strain_dir = '/home/kevin/Downloads/shell-0p125x-shrinkage';
-% strain_dir = '/home/kevin/Downloads/gus-0p125x-200um-freq50';
+% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/output/shrinkage';
+% strain_dir = '/home/kevin/Downloads/5x5x5-beta/10-10/output/shrinkage';
+% strain_dir = '/home/kevin/Downloads/5x5x5-threshold/25-25/output/shrinkage';
+% strain_dir = '/home/kevin/Downloads/2x2x2-newTS/25-25/output/shrinkage';
+% strain_dir = '/home/kevin/Downloads/2x2x2-tuningReheating/25-25/output/shrinkage';
+% strain_dir = '/home/kevin/sim-output/debug/vertplate/strain';
+ strain_dir = '/home/kevin/sim-output/debug/aibuild-1661/output/shrinkage';
+% strain_dir = '/home/kevin/Downloads/2x2x2-4.16.0/100-100/output/shrinkage';
+%strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/reference-linux-periodic/shrinkage';
+% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/output_20e6_mf1_vtk/shrinkage';
+% strain_dir = '/home/kevin/3DSIM_src/thermal-solver/test/output/shrinkage';
 % strain_dir = '/home/kevin/Downloads/shrinkage';
-% strain_dir = '/home/kevin/Downloads/shrinkage_297_shortcool';
-% strain_dir = '/home/kevin/Downloads/shrinkage_264';
-strain_dir = '/home/kevin/Downloads/5x5x5-newTS/100-100/output/shrinkage';
-% strain_dir = '/home/kevin/Downloads/2x2x2-oldTS/10-10/output/shrinkage';
-% strain_dir = '/home/kevin/Downloads/shell-0p125x-50um-20freq-2p26';
-% strain_dir = [Tfield_dir, '/shrinkage'];
+% strain_dir = '/home/kevin/Downloads/2x2x2/25-25/output/shrinkage';
+%strain_dir = [Tfield_dir + '/shrinkage'];
 
-plotStrain = false;
+plotStrain = true;
 shrinkageFileStem = 'Shrinkage';
-% shrinkageFileStem = 'ShrinkageDisplacementsShrinkage';
 
+YS = 5.4e8;
+E = 1.96e11;
+rf = 2e-2;
+yieldStrain = 1;
+% yieldStrain = rf*YS/E;
 
 %----- Mesh Parameters -----
 sd=12;   % number of square divisions in the mesh
 Nodes=21;
 
 cd(plot_tool_dir)
- [X, Y, ~] = readTempUniformGrid(pwd, Tfield_dir, [tempFileRoot, ...
-     temperatureFileStem, '.csv']);
-% [X, Y, ~] = readStrain(pwd, strain_dir, [shrinkageFileStem, '_L10001.csv']);
+  if (plotTemperature == true && plotStrain == false)
+    [X, Y, ~] = readTempUniformGrid(pwd, Tfield_dir, ['ResultL0_T0_', ...
+        temperatureFileStem, '.csv']);
+  else
+    [X, Y, ~, ~, ~] = readAnisotropicStrain(pwd, strain_dir, [shrinkageFileStem, '_L10001.csv']);
+  end
 cd(strain_dir)
 
 xlocs_full = zeros(length(X)*length(Y), 1);
@@ -93,9 +79,12 @@ bedmax_y=max_y+0.2*bedwidth_y;
 if (plotStrain == true)
     cd(strain_dir)
     strainFiles = dir([shrinkageFileStem, '*']);
+
+    cd(plot_tool_dir)
     [~,index] = sort_nat({strainFiles.name});
     strainFiles = strainFiles(index);
     numFiles = length(strainFiles);
+    cd(strain_dir)
 end
 
 %----- Read the first layer of temperature -----
@@ -103,6 +92,7 @@ if (plotTemperature == true)
     cd(Tfield_dir)
 
     Tfiles = dir(['*', temperatureFileStem, '*']);
+    cd(plot_tool_dir)
     [~,index] = sort_nat({Tfiles.name});
     Tfiles = Tfiles(index);
     numFiles = length(Tfiles);
@@ -115,13 +105,16 @@ end
 
 %----- Loop over all files ----
 for t = 1:1:numFiles
-    clf
     ppp = figure(10)
 
     if (plotTemperature == true)
         cd(Tfield_dir)
         SallyT=csvread(Tfiles(t).name);
+
+        cd(plot_tool_dir)
+        [X, Y, ~] = readTempUniformGrid(pwd, Tfield_dir, Tfiles(t).name);
         cd(strain_dir)
+
         p=SallyT(:,1:2);
         %     plot(p(:,1),p(:,2),'r*')
         T2=SallyT(:,4);
@@ -131,32 +124,79 @@ for t = 1:1:numFiles
 
 
         hold on
-         % subplot(1,2,1)
         contourf(qx,qy,qz, [350 400 500 600 700 1000 1200 1500 1800 1923 3315]);
         caxis([350, 3315]);
         caxis manual;
         %              caxis([(300)/max(max(T)) (1500)/max(max(T))]*max(max(T)));
 
         colorbar
-        title(['time =', num2str(t)])
+        title(Tfiles(t).name);
+        %axis([min(X) 0.002 min(Y) 0.002])
         % axis([0 0.0215 0 0.0115])
-        % axis([0.65e-3 2.6e-3 0.65e-3 2.6e-3])
-        axis([0 0.041 0 0.011])
     end
 
-    %----- Plot Strain -----
+    %----- Plot Anisotropic Strain -----
     if plotStrain == true
         filename = strainFiles(t).name;
         % filename = [shrinkageFileStem, '_L', num2str(t+10000), '.csv'];
 
         cd(plot_tool_dir)
-        [X, Y, Eps] = readStrain(pwd, strain_dir, filename);
+        [X, Y, EpsXX, EpsYY, EpsZZ, EpsXY] = readAnisotropicStrain(pwd, strain_dir, filename);
         cd(strain_dir)
 
-        F = TriScatteredInterp(xlocs_full, ylocs_full, Eps);
-        qz = F(qx,qy);
-         % subplot(1,2,2)
-        ppp = contourf(qx,qy,qz);
+        xlocs_full = zeros(length(X)*length(Y), 1);
+        ylocs_full = zeros(length(X)*length(Y), 1);
+        for j = 1:length(Y)
+          for i = 1:length(X)
+            idx = i + (j-1)*length(X);
+            xlocs_full(idx) = X(i);
+            ylocs_full(idx) = Y(j);
+          end
+        end
+
+        Fxx = TriScatteredInterp(xlocs_full, ylocs_full, EpsXX);
+        qz_xx = Fxx(qx,qy);
+         subplot(2,2,1)
+        ppp = contourf(qx,qy,qz_xx/yieldStrain);
+
+        title('\epsilon_x_x', 'fontsize', 14)
+        %title(['time =', num2str(t)])
+        % axis([0 1.2e-3 0 1.2e-3])
+        % caxis([-1e-3, 0])
+        % caxis([-3, 0])
+        colorbar
+        colormap(jet)
+
+        Fyy = TriScatteredInterp(xlocs_full, ylocs_full, EpsYY);
+        qz_yy = Fyy(qx,qy);
+         subplot(2,2,2)
+        ppp = contourf(qx,qy,qz_yy/yieldStrain);
+
+        title('\epsilon_y_y', 'fontsize', 14)
+        % axis([0 1.2e-3 0 1.2e-3])
+        %caxis([-0.02, 0.007])
+         %caxis([-1e-3, 0])
+        % caxis([-3, 0])
+        colorbar
+        colormap(jet)
+
+        Fzz = TriScatteredInterp(xlocs_full, ylocs_full, EpsZZ);
+        qz_zz = Fzz(qx,qy);
+        subplot(2,2,3)
+        ppp = contourf(qx,qy,qz_zz/yieldStrain);
+
+        title('\epsilon_z_z', 'fontsize', 14)
+        % axis([0 1.2e-3 0 1.2e-3])
+        % caxis([-0.02, 0.007])
+         %caxis([-3e-4, 0])
+        % caxis([-1, 0])
+        colorbar
+        colormap(jet)
+
+        Fxy = TriScatteredInterp(xlocs_full, ylocs_full, EpsXY);
+        qz_xy = Fxy(qx,qy);
+         subplot(2,2,4)
+        ppp = contourf(qx,qy,qz_xy/yieldStrain);
 
         % axis([0 0.011 0 0.003])
         % axis([0 0.0215 0 0.0115])
@@ -166,14 +206,18 @@ for t = 1:1:numFiles
         %title(['layer =', num2str(t)])
         title(['time =', num2str(t)])
 
-        caxis([-0.02, 0.02])
+        % title('\epsilon_x_y', 'fontsize', 14)
+        % axis([0 1.2e-3 0 1.2e-3])
+        % caxis([-0.02, 0.007])
+         %caxis([-4e-4, 0])
+        % caxis([-1, 0])
         colorbar
         colormap(jet)
         pause(0.005)
         hold on
     end
 
-    pause(0.001)
+    pause
 
 
     figname = 'strain_';

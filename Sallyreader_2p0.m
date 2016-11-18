@@ -41,7 +41,7 @@ for i = 1:1:numfiles
             ppp = figure(1)
             SallyT=csvread(csvfiles(i).name);
             p=SallyT(:,1:2);
-%             plot(p(:,1),p(:,2),'k*')
+             plot(p(:,1),p(:,2),'k*')
             T2=SallyT(:,4);
             F = TriScatteredInterp(p,T2);
             qz = F(qx,qy);
